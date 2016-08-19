@@ -3,8 +3,8 @@
 import syslog
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Group
+from django.contrib.auth.backends import ModelBackend
 
 import dpam.pam as pam
 
@@ -32,11 +32,13 @@ class PAMBackend(ModelBackend):
             if getattr(settings, 'PAM_IS_STAFF', user.is_superuser):
                 user.is_staff = True
 
-            if getattr(settings, 'PAM_USERS_GROUP', None):
+            user.save()
+
+            if getattr(settings, 'PAM_USERS_GROUP', False):
                 group = Group.objects.get(name=settings.PAM_USERS_GROUP)
                 group.user_set.add(user)
+                group.save()
 
-            user.save()
         return user
 
     def get_user(self, user_id):
