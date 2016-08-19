@@ -1,9 +1,10 @@
-""" This file manage the authentication and user creation"""
+""" Django PAM Authentication Backend"""
 
 import syslog
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import Group
 
 import dpam.pam as pam
 
@@ -30,6 +31,10 @@ class PAMBackend(ModelBackend):
 
             if getattr(settings, 'PAM_IS_STAFF', user.is_superuser):
                 user.is_staff = True
+
+            if getattr(settings, 'PAM_USERS_GROUP', None):
+                group = Group.objects.get(name=settings.PAM_USERS_GROUP)
+                group.user_set.add(user)
 
             user.save()
         return user
