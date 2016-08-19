@@ -3,9 +3,11 @@ import pam
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
+import syslog
 
 class PAMBackend(ModelBackend):
     def authenticate(self, username=None, password=None):
+	syslog.syslog('django pam realyy')
         service = getattr(settings, 'PAM_SERVICE', 'login')
         if not pam.authenticate(username, password, service=service):
             return None
