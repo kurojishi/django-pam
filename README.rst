@@ -19,3 +19,6 @@ object is created.  By default this new ``User`` has both ``is_staff`` and
 If you do not want a ``User`` record to be created automatically, use
 ``PAM_CREATE_USER=False`` in ``settings.py``.  This is useful in situations
 where you want to use PAM for authentication but not for authorization.
+
+If you want your new users in a specific group use the setting ``PAM_USERS_GROUP="<group_name>"``,
+this will automatically add them to the group.
